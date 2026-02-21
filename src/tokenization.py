@@ -77,10 +77,13 @@ for word, tokens in zip(input, output):
     print('{:<16} -> {}'.format(word, tokens))
 
 def tokenize(corpus: str, delimiters: set[str]) -> list[str]:
-    with open(corpus, encoding="utf-8") as fin:
+    with open(corpus) as fin:
         words = fin.read().split()
     return [token for word in words for token in postprocess(delimit(word, delimiters))]
 
+
+from collections import Counter
+from src.frequency_analysis import save_output
 
 corpus = "C:/Users/Abasu/PycharmProjects/nlp-essentials/dat/emory-wiki.txt"
 output = "C:/Users/Abasu/PycharmProjects/nlp-essentials/dat/word_types-token.txt"
@@ -88,8 +91,7 @@ output = "C:/Users/Abasu/PycharmProjects/nlp-essentials/dat/word_types-token.txt
 words = tokenize(corpus, delims)
 counts = Counter(words)
 
-print(f"# of word tokens: {len(words)}")
-print(f"# of word types: {len(counts)}")
+print(f'# of word tokens: {len(words)}')
+print(f'# of word types: {len(counts)}')
 
 save_output(counts, output)
-print("Saved to:", Path(output).resolve())

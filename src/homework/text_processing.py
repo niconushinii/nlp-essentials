@@ -139,32 +139,30 @@ CITE = 'cite'
 
 
 def regular_expressions(text: str) -> str | None:
-    if not text:
-        return None
-    s = text.strip()
-    if not s:
-        return None
     """
     Identifies the type of a given text pattern.
 
     :param text: String to classify.
     :return: One of "email", "date", "url", "cite"; None, if no pattern matches.
     """
-    s = text.strip()
+    if not text:
+        return None
 
-    # email: username@hostname.domain (domain in {com, org, edu, gov})
+    s = text.strip()
+    if not s:
+        return None
+
     re_email = re.compile(
         r'^'
         r'[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?'  # username
         r'@'
-        r'[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?'  # hostname (can include dots)
+        r'[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?'  # hostname
         r'\.(com|org|edu|gov)'
         r'$'
     )
     if re_email.fullmatch(s):
         return EMAIL
 
-    # date: YYYY/MM/DD or YY/MM/DD, YYYY-MM-DD or YY-MM-DD
     re_date = re.compile(
         r'^(?P<year>\d{2}|\d{4})(?P<sep>[/-])(?P<month>\d{1,2})(?P=sep)(?P<day>\d{1,2})$'
     )
@@ -178,16 +176,15 @@ def regular_expressions(text: str) -> str | None:
             year = int(y_raw)
         else:
             yy = int(y_raw)
-            year = 1900 + yy if yy >= 51 else 2000 + yy  # 51-99 => 1951-1999, 00-50 => 2000-2050
+            year = 1900 + yy if yy >= 51 else 2000 + yy
 
         if 1951 <= year <= 2050:
             try:
-                date(year, month, day)  # validates month/day for that month (incl leap years)
+                date(year, month, day)
                 return DATE
             except ValueError:
                 pass
 
-    # url: http(s)://address where address has letters/hyphen/dots, starts w/ alnum, includes a dot
     re_url = re.compile(r'^(https?)://(?P<addr>[A-Za-z0-9.-]+)$')
     m = re_url.fullmatch(s)
     if m:
@@ -195,10 +192,6 @@ def regular_expressions(text: str) -> str | None:
         if '.' in addr and addr[0].isalnum() and addr[-1].isalnum():
             return URL
 
-    # cite:
-    # Smith, 2023
-    # Smith and Jones, 2023
-    # Smith et al., 2023
     last = r"[A-Z][a-z]+(?:[-'][A-Z][a-z]+)*"
     name = rf"{last}(?:\s+{last})*"
 
@@ -213,7 +206,6 @@ def regular_expressions(text: str) -> str | None:
             if 1900 <= year <= 2024:
                 return CITE
 
-    # Task 2
     return None
 
 
