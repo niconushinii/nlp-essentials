@@ -6,9 +6,7 @@ UNKNOWN = ''
 INIT = '[INIT]'
 
 
-# ==================================================
 # Task 1: Bigram Modeling
-# ==================================================
 
 def bigram_model(filepath):
     """
@@ -54,9 +52,7 @@ def bigram_model(filepath):
     return model
 
 
-# ==================================================
 # Task 2: Sequence Generation
-# ==================================================
 
 def _is_punctuation(token):
     return bool(token) and all(ch in punctuation for ch in token)
@@ -139,9 +135,7 @@ def sequence_generator(model, initial_word, length):
     return sequence, score
 
 
-# ==================================================
 # Extra Credit
-# ==================================================
 
 def sequence_generator_plus(model, initial_word, length, beam_width=5):
     """
